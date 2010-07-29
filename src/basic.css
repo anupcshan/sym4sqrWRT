@@ -1,3 +1,19 @@
-/*
- * Add your Stylesheet contents here
- */
+#lightBox {
+	position: absolute;
+	left: 15%;
+	right: 15%;
+	top: 15%;
+	bottom: 15%;
+	width: 70%;
+	background-color: black;
+	opacity: 0.6;
+	display: none;
+	z-index: 2;
+}
+
+#lightBoxInner {
+	text-align: center;
+	color: white;
+	display: table-cell;
+	vertical-align: middle;
+}
