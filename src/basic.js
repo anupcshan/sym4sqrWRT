@@ -1,10 +1,15 @@
 var sym4sqr = {};
 
 sym4sqr._loggedIn = false;
+sym4sqr._API_ROOT = 'http://api.foursquare.com/v1/';
+sym4sqr._username = "";
+sym4sqr._password = "";
+sym4sqr._me = null;
+
 sym4sqr.doWork = function() {
-	if (this._loggedIn == true)
-		this.showMainWindow();
-	else	this.showLoginWindow();
+	if (sym4sqr._loggedIn == true)
+		sym4sqr.showMainWindow();
+	else	sym4sqr.showLoginWindow();
 }
 
 sym4sqr.showMainWindow = function() {
@@ -28,8 +33,39 @@ sym4sqr.showLoginWindow = function() {
 	$('#loginButton').click(sym4sqr._loginButtonHandler);
 }
 
+sym4sqr._makeNetworkRequest = function(args) {
+	/*
+	 * args : Bag of parameters containing
+	 * 	- apifn    => API function to be called
+	 *	- callback => Function to be called once network request is completed
+	 *	- params   => Parameters to be sent in the request
+	 *	- type     => GET/POST
+	 */
+	if (args.params == null)
+		args.params = "";
+
+	if (args.type == null)
+		args.type = "GET";
+	$.ajax({url: sym4sqr._API_ROOT + args.apifn,  success: args.callback, data: args.params, username: sym4sqr._username, password: sym4sqr._password, type: args.type});
+}
+
 sym4sqr._loginButtonHandler = function() {
-	alert('Implement login feature.');
+	sym4sqr._username = $('#username').val();
+	sym4sqr._password = $('#password').val();
+	sym4sqr._makeNetworkRequest({apifn: "user.json", type: "GET", params: {}, callback: sym4sqr._loginRequestCallback});
+}
+
+sym4sqr._loginRequestCallback = function(data) {
+	if (data['user'] == null) {
+		sym4sqr._loggedIn = false;
+		alert('Login error.');
+		return;
+	}
+
+	sym4sqr._loggedIn = true;
+	sym4sqr._me = data['user'];
+	alert('Logged in as ' + sym4sqr._me.firstname);
+	sym4sqr.showMainWindow();
 }
 
 function init()
