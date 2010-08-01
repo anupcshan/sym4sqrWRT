@@ -40,5 +40,5 @@ Venue.getVenue = function (id, nocreate) {
 		return Venue._venueList[id];
 	if (nocreate)
 		return null;
-	return new Venue(id);
+	return Venue._venueList[id] = new Venue(id);
 }

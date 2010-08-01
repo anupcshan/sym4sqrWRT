@@ -45,5 +45,5 @@ User.getUser = function (id, nocreate) {
 		return User._userList[id];
 	if (nocreate)
 		return null;
-	return new User(id);
+	return User._userList[id] = new User(id);
 }

@@ -41,5 +41,5 @@ Checkin.getCheckin = function (id, nocreate) {
 		return Checkin._checkinList[id];
 	if (nocreate)
 		return null;
-	return new Checkin(id);
+	return Checkin._checkinList[id] = new Checkin(id);
 }
