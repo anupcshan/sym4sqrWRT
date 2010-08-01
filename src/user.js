@@ -10,7 +10,7 @@ function User(args) {
 	if (User._userList[args.id] != null)
 		alert('Trying to recreate user.');
 	this.id = args.id;
-	User._userLst[id] = this;
+	User._userList[id] = this;
 }
 
 User.prototype.setValues = function(userData) {
