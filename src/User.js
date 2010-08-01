@@ -2,7 +2,7 @@ User.prototype = new Object();
 User.prototype.constructor = User;
 User.superclass = Object.prototype;
 
-User._userList = [];
+User._userList = {};
 
 function User(args) {
 	if (args == null || args.id == null)
@@ -10,21 +10,45 @@ function User(args) {
 	if (User._userList[args.id] != null)
 		alert('Trying to recreate user.');
 	this.id = args.id;
-	User._userList[id] = this;
+	User._userList[this.id] = this;
 }
 
 User.prototype.setValues = function(userData) {
-	this.firstname = userData.firstname;
-	this.lastname = userData.lastname;
-	this.phone = userData.phone;
-	this.photo = userData.photo;
-	this.twitter = userData.twitter;
-	this.facebook = userData.facebook;
-	this.gender = userData.gender;
-	this.checkins = [];
-	this.badges = [];
-	this.mayorships = [];
-	this.friends = [];
+	if (userData.firstname != null)
+		this.firstname = userData.firstname;
+	if (userData.lastname != null)
+		this.lastname = userData.lastname;
+	if (userData.phone != null)
+		this.phone = userData.phone;
+	if (userData.photo != null)
+		this.photo = userData.photo;
+	if (userData.twitter != null)
+		this.twitter = userData.twitter;
+	if (userData.facebook != null)
+		this.facebook = userData.facebook;
+	if (userData.gender != null)
+		this.gender = userData.gender;
+	if (userData.checkins != null) {
+		for (var checkin in userData.checkins) {
+			var checkinobj = Checkin.getCheckin(checkin.id, checkin);
+			if (this.checkins.indexOf(checkinobj) != -1)
+				continue;
+			this.checkins.push(checkinobj);
+		}
+	}
+	if (userData.checkin != null) {
+		var checkin = userData.checkin;
+		checkin.user = this;
+		var checkinobj = Checkin.getCheckin(checkin.id, checkin);
+		if (this.checkins.indexOf(checkinobj) == -1)
+			this.checkins.push(checkinobj);
+	}
+	if (userData.badges != null)
+		this.badges = [];	// TODO
+	if (userData.mayorships != null)
+		this.mayorships = [];	// TODO
+	if (userData.friends != null)
+		this.friends = [];	// TODO
 }
 
 User.prototype.id = "";
@@ -40,10 +64,12 @@ User.prototype.badges = [];
 User.prototype.mayorships = [];
 User.prototype.friends = [];
 
-User.getUser = function (id, nocreate) {
+User.getUser = function (id, userData) {
 	if (User._userList[id] != null)
 		return User._userList[id];
-	if (nocreate)
+	if (!userData)
 		return null;
-	return User._userList[id] = new User(id);
+	var newUser = new User({id: id});
+	newUser.setValues(userData);
+	return newUser;
 }

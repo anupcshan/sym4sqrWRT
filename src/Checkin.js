@@ -2,7 +2,7 @@ Checkin.prototype = new Object();
 Checkin.prototype.constructor = Checkin;
 Checkin.superclass = Object.prototype;
 
-Checkin._checkinList = [];
+Checkin._checkinList = {};
 
 function Checkin(args) {
 	if (args == null || args.id == null)
@@ -10,18 +10,18 @@ function Checkin(args) {
 	if (Checkin._checkinList[args.id] != null)
 		alert('Trying to recreate checkin.');
 	this.id = args.id;
-	Checkin._checkinList[id] = this;
+	Checkin._checkinList[this.id] = this;
 }
 
 Checkin.prototype.setValues = function(checkinData) {
-	this.user = User.getUser(checkinData.user.id, false);
-	this.venue = Venue.getVenue(checkinData.venue.id, false);
+	this.user = User.getUser(checkinData.user.id, checkinData.user);
+	this.venue = Venue.getVenue(checkinData.venue.id, checkinData.venue);
 	if (checkinData.shout) {
 		this.shout = checkinData.shout;
 	}
 
 	// Jugglery to change time format to JS type.
-	var time = checkinData.created;
+	var time = checkinData.created.split(' ');
 	time.splice(0, 1);
 	var temp = time[0];
 	time[0] = time[1];
@@ -36,10 +36,12 @@ Checkin.prototype.venue = null;
 Checkin.prototype.shout = "";
 Checkin.prototype.created = null;
 
-Checkin.getCheckin = function (id, nocreate) {
+Checkin.getCheckin = function (id, checkinData) {
 	if (Checkin._checkinList[id] != null)
 		return Checkin._checkinList[id];
-	if (nocreate)
+	if (!checkinData)
 		return null;
-	return Checkin._checkinList[id] = new Checkin(id);
+	var newCheckin = new Checkin({id: id});
+	newCheckin.setValues(checkinData);
+	return newCheckin;
 }
