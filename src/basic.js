@@ -63,7 +63,8 @@ sym4sqr._loginRequestCallback = function(data) {
 	}
 
 	sym4sqr._loggedIn = true;
-	sym4sqr._me = data['user'];
+	sym4sqr._me = User.getUser(data['user'].id);
+	sym4sqr._me.setValues(data['user']);
 	alert('Logged in as ' + sym4sqr._me.firstname);
 	sym4sqr.showMainWindow();
 }
