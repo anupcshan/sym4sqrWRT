@@ -5,6 +5,8 @@ sym4sqr._API_ROOT = 'http://api.foursquare.com/v1/';
 sym4sqr._username = "";
 sym4sqr._password = "";
 sym4sqr._me = null;
+sym4sqr._serviceObject = null;
+sym4sqr._location = {hasLocation: false};
 
 sym4sqr.doWork = function() {
 	if (sym4sqr._loggedIn == true)
@@ -70,5 +72,39 @@ sym4sqr._loginRequestCallback = function(data) {
 
 function init()
 {
+	sym4sqr.getLocationAsync();
 	sym4sqr.doWork();
+}
+
+// Gets the GPS position
+sym4sqr.getLocationAsync = function() {
+	try {
+		//Retrieves the Service object to the ILocation interface
+		sym4sqr._serviceObject = device.getServiceObject("Service.Location", "ILocation");
+	} catch (e) {
+		alert(e);
+		return;
+	}
+
+	// This specifies update option used while retrieving location estimation. 
+	var updateoptions = new Object();
+	// Setting PartialUpdates to 'FALSE' ensures that user get atleast 
+	// BasicLocationInformation (Longitude, Lattitude, and Altitude.) is the default when no LocationInformationClass criteria is given.
+	updateoptions.PartialUpdates = false;
+
+	var criteria = new Object();
+	criteria.Updateoptions = updateoptions;
+
+	try {
+		//Executes the GetLocation method and sets the callbackLocation as the callback function to be called.
+		sym4sqr._serviceObject.ILocation.GetLocation(criteria, sym4sqr.gpsCallbackLocation);
+	} catch (e) {
+		alert (e);
+	}
+}
+ 
+sym4sqr.gpsCallbackLocation = function(transId, eventCode, result){
+	sym4sqr._location.hasLocation = true;
+	sym4sqr._location.latitude = result.ReturnValue.Latitude;
+	sym4sqr._location.longitude = result.ReturnValue.Longitude;
 }
