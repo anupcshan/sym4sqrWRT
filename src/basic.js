@@ -42,13 +42,21 @@ sym4sqr._makeNetworkRequest = function(args) {
 	 *	- callback => Function to be called once network request is completed
 	 *	- params   => Parameters to be sent in the request
 	 *	- type     => GET/POST
+	 *	- inclLocn => Boolean value indicating whether location info can be
+	 *	               included in the request.
 	 */
 	if (args.params == null)
-		args.params = "";
+		args.params = {};
 
 	if (args.type == null)
 		args.type = "GET";
-	$.ajax({url: sym4sqr._API_ROOT + args.apifn,  success: args.callback, data: args.params, username: sym4sqr._username, password: sym4sqr._password, type: args.type});
+
+	if (args.incLocn == true && sym4sqr._location.hasLocation == true) {
+		args.params.geolong = sym4sqr._location.longitude;
+		args.params.geolat = sym4sqr._location.latitude;
+	}
+	$.ajax({url: sym4sqr._API_ROOT + args.apifn,  success: args.callback, data: args.params,
+			username: sym4sqr._username, password: sym4sqr._password, type: args.type});
 }
 
 sym4sqr._loginButtonHandler = function() {
