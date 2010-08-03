@@ -51,7 +51,7 @@ sym4sqr._makeNetworkRequest = function(args) {
 	if (args.type == null)
 		args.type = "GET";
 
-	if (args.incLocn == true && sym4sqr._location.hasLocation == true) {
+	if (args.inclLocn == true && sym4sqr._location.hasLocation == true) {
 		args.params.geolong = sym4sqr._location.longitude;
 		args.params.geolat = sym4sqr._location.latitude;
 	}
