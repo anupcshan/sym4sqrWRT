@@ -25,29 +25,29 @@ Checkin.superclass = Object.prototype;
 Checkin._checkinList = {};
 
 function Checkin(args) {
-	if (args == null || args.id == null)
-		return;
-	if (Checkin._checkinList[args.id] != null)
-		alert('Trying to recreate checkin.');
-	this.id = args.id;
-	Checkin._checkinList[this.id] = this;
+    if (args == null || args.id == null)
+        return;
+    if (Checkin._checkinList[args.id] != null)
+        alert('Trying to recreate checkin.');
+    this.id = args.id;
+    Checkin._checkinList[this.id] = this;
 }
 
 Checkin.prototype.setValues = function(checkinData) {
-	this.user = User.getUser(checkinData.user.id, checkinData.user);
-	this.venue = Venue.getVenue(checkinData.venue.id, checkinData.venue);
-	if (checkinData.shout) {
-		this.shout = checkinData.shout;
-	}
+    this.user = User.getUser(checkinData.user.id, checkinData.user);
+    this.venue = Venue.getVenue(checkinData.venue.id, checkinData.venue);
+    if (checkinData.shout) {
+        this.shout = checkinData.shout;
+    }
 
-	// Jugglery to change time format to JS type.
-	var time = checkinData.created.split(' ');
-	time.splice(0, 1);
-	var temp = time[0];
-	time[0] = time[1];
-	time[1] = temp + ',';
-	time[2] = '20' + time[2];
-	this.created = new Date(time.join(' '));
+    // Jugglery to change time format to JS type.
+    var time = checkinData.created.split(' ');
+    time.splice(0, 1);
+    var temp = time[0];
+    time[0] = time[1];
+    time[1] = temp + ',';
+    time[2] = '20' + time[2];
+    this.created = new Date(time.join(' '));
 }
 
 Checkin.prototype.id = "";
@@ -57,11 +57,11 @@ Checkin.prototype.shout = "";
 Checkin.prototype.created = null;
 
 Checkin.getCheckin = function (id, checkinData) {
-	if (Checkin._checkinList[id] != null)
-		return Checkin._checkinList[id];
-	if (!checkinData)
-		return null;
-	var newCheckin = new Checkin({id: id});
-	newCheckin.setValues(checkinData);
-	return newCheckin;
+    if (Checkin._checkinList[id] != null)
+        return Checkin._checkinList[id];
+    if (!checkinData)
+        return null;
+    var newCheckin = new Checkin({id: id});
+    newCheckin.setValues(checkinData);
+    return newCheckin;
 }
