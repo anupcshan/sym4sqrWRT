@@ -18,3 +18,47 @@
 	display: table-cell;
 	vertical-align: middle;
 }
+
+#topbar {
+	position: absolute;
+	top: 0pt;
+	left: 0pt;
+	right: 0pt;
+	height: 10%;
+}
+
+#bottombar {
+	position: absolute;
+	bottom: 0pt;
+	left: 0pt;
+	right: 0pt;
+	height: 10%;
+}
+
+#backbutton {
+	height: 100%;
+	float: left;
+	width: 25%;
+}
+
+#logoutbutton {
+	height: 100%;
+	float: right;
+	width: 25%;
+}
+
+#topcenter {
+	height: 100%;
+	margin-left: auto;
+	margin-right: auto;
+	width: 50%;
+}
+
+#maincontent {
+	top: 10%;
+	bottom: 10%;
+	width: 100%;
+	position: absolute;
+	left: 0pt;
+	right: 0pt;
+}
