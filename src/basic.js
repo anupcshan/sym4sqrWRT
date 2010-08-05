@@ -35,7 +35,6 @@ sym4sqr.doWork = function() {
 }
 
 sym4sqr.showMainWindow = function() {
-    $('#sym4sqrContainer').text('');
     $('#lightBox').hide(400);
 }
 
