@@ -1,0 +1,10 @@
+- FoursquareNetwork class which contains network API interaction.
+    + listFriends(uid)
+    + listVenues()
+    + listTips()
+    + getUserDetails()
+    + getVenueDetails()
+    + searchUser()
+    + searchVenues()
+    + getHistory()
+    + getRecentActivity()
