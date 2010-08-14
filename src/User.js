@@ -67,8 +67,12 @@ User.prototype.setValues = function(userData) {
         this.badges = [];    // TODO
     if (userData.mayorships != null)
         this.mayorships = [];    // TODO
-    if (userData.friends != null)
-        this.friends = [];    // TODO
+    if (userData.friends != null) {
+        this.friends = [];
+        for (var i = 0, len = userData.friends.length; i < len; i ++) {
+            this.friends.push(User.getUser(userData.friends[i].id, userData.friends[i]));
+        }
+    }
 }
 
 User.prototype.id = "";
