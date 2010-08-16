@@ -19,25 +19,34 @@
  */
 
 FoursquareAPI = {};
+FoursquareAPI._me = User.getUser();
 
 FoursquareAPI.listFriends = function(callback, userId) {
     var params = {};
     if (userId != null)
         params.uid = userId;
     var callbackfn = function(data) {
-        callback(FoursquareAPI._listFriendsCallback(data));
+        callback(FoursquareAPI._listFriendsCallback(data, userId));
     };
     sym4sqr._makeNetworkRequest({apifn: "friends.json", type: "GET",
             params: params, callback: callbackfn});
 }
 
-FoursquareAPI._listFriendsCallback = function(data) {
+FoursquareAPI._listFriendsCallback = function(data, userId) {
     if (data == null || data.friends == null)
         return null;
 
     var friends = [];
     for (var i = 0, len = data.friends.length; i < len; i ++) {
         friends.push(User.getUser(data.friends[i].id, data.friends[i]));
+    }
+
+    if (userId == null)
+        FoursquareAPI._me.setData({friends: friends});
+    else {
+        var user = User.getUser(userId, {});
+        if (user != null)
+            user.setData({friends: friends});
     }
     return friends;
 }

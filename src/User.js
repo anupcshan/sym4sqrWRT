@@ -29,11 +29,21 @@ function User(args) {
         return;
     if (User._userList[args.id] != null)
         alert('Trying to recreate user.');
-    this.id = args.id;
+    if (args.id)
+        this.id = args.id;
+    else
+        this.id = "0";
     User._userList[this.id] = this;
 }
 
 User.prototype.setValues = function(userData) {
+    if (userData.id != null && this.id == "0") {
+        // Overwrite id only if its not already set.
+        // Needed for setting "me" user.
+        User._userList[this.id] = null;
+        this.id = userData.id;
+        User._userList[this.id] = this;
+    }
     if (userData.firstname != null)
         this.firstname = userData.firstname;
     if (userData.lastname != null)
