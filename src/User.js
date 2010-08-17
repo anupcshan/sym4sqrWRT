@@ -25,7 +25,7 @@ User.superclass = Object.prototype;
 User._userList = {};
 
 function User(args) {
-    if (args == null || args.id == null)
+    if (args == null)
         return;
     if (User._userList[args.id] != null)
         alert('Trying to recreate user.');

@@ -19,7 +19,7 @@
  */
 
 FoursquareAPI = {};
-FoursquareAPI._me = User.getUser();
+FoursquareAPI._me = User.getUser(null, {});
 
 FoursquareAPI.listFriends = function(callback, userId) {
     var params = {};
@@ -42,7 +42,7 @@ FoursquareAPI._listFriendsCallback = function(data, userId) {
     }
 
     if (userId == null)
-        FoursquareAPI._me.setData({friends: friends});
+        FoursquareAPI._me.setValues({friends: friends});
     else {
         var user = User.getUser(userId, {});
         if (user != null)
@@ -53,7 +53,34 @@ FoursquareAPI._listFriendsCallback = function(data, userId) {
 
 FoursquareAPI.listVenues = function(callback) {}
 FoursquareAPI.listTips = function(callback, venueId) {}
-FoursquareAPI.getUserDetails = function(callback, userId) {}
+FoursquareAPI.getUserDetails = function(callback, userId) {
+    var params = {};
+    if (userId != null)
+        params.uid = userId;
+    var callbackfn = function(data) {
+        callback(FoursquareAPI._getUserDetailsCallback(data, userId));
+    };
+    sym4sqr._makeNetworkRequest({apifn: "user.json", type: "GET",
+            params: params, callback: callbackfn});
+}
+
+FoursquareAPI._getUserDetailsCallback = function(data, userId) {
+    if (data == null || data.user == null)
+        return null;
+
+    var userData = data.user;
+
+    var user = null;
+    if (userId == null) {
+        FoursquareAPI._me.setValues(userData);
+        user = FoursquareAPI._me;
+    }
+    else {
+        user = User.getUser(userId, userData);
+    }
+    return user;
+}
+
 FoursquareAPI.getVenueDetails = function(callback, venueId) {}
 FoursquareAPI.searchUser = function(callback) {}
 FoursquareAPI.searchVenues = function(callback) {}
