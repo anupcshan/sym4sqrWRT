@@ -29,7 +29,7 @@ FoursquareAPI.listFriends = function(callback, userId) {
         callback(FoursquareAPI._listFriendsCallback(data, userId));
     };
     sym4sqr._makeNetworkRequest({apifn: "friends.json", type: "GET",
-            params: params, callback: callbackfn});
+            params: params, callback: callbackfn, inclLocn: true});
 }
 
 FoursquareAPI._listFriendsCallback = function(data, userId) {
@@ -51,8 +51,30 @@ FoursquareAPI._listFriendsCallback = function(data, userId) {
     return friends;
 }
 
-FoursquareAPI.listVenues = function(callback) {}
+FoursquareAPI.listVenues = function(callback) {
+    var params = {};
+    var callbackfn = function(data) {
+        callback(FoursquareAPI._listVenuesCallback(data));
+    };
+    sym4sqr._makeNetworkRequest({apifn: "venues.json", type: "GET",
+            params: params, callback: callbackfn, inclLocn: true});
+}
+
+FoursquareAPI._listVenuesCallback = function(data) {
+    if (data == null || data.groups == null)
+        return null;
+    var venues = [], venue;
+    for (var i = 0, grps = data.groups.length; i < grps; i ++) {
+        for (var j = 0, len = data.groups[i].venues.length; j < len; j ++) {
+            venue = data.groups[i].venues[j];
+            venues.push(Venue.getVenue(venue.id, venue));
+        }
+    }
+    return venues;
+}
+
 FoursquareAPI.listTips = function(callback, venueId) {}
+
 FoursquareAPI.getUserDetails = function(callback, userId) {
     var params = {};
     if (userId != null)
@@ -61,7 +83,7 @@ FoursquareAPI.getUserDetails = function(callback, userId) {
         callback(FoursquareAPI._getUserDetailsCallback(data, userId));
     };
     sym4sqr._makeNetworkRequest({apifn: "user.json", type: "GET",
-            params: params, callback: callbackfn});
+            params: params, callback: callbackfn, inclLocn: true});
 }
 
 FoursquareAPI._getUserDetailsCallback = function(data, userId) {
