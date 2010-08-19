@@ -43,7 +43,7 @@ Venue.prototype.setValues = function(venueData) {
     if (venueData.stats != null) {
         if (venueData.stats.mayor != null)
         this.mayor = User.getUser(venueData.stats.mayor.user.id,
-                venueData.stats.mayor.user.id);
+                venueData.stats.mayor.user);
     }
 }
 

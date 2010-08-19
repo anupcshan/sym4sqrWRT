@@ -73,7 +73,7 @@ FoursquareAPI._listVenuesCallback = function(data) {
     return venues;
 }
 
-FoursquareAPI.listTips = function(callback, venueId) {}
+FoursquareAPI.listTips = function(callback, venueId) {} // TODO
 
 FoursquareAPI.getUserDetails = function(callback, userId) {
     var params = {};
@@ -103,8 +103,29 @@ FoursquareAPI._getUserDetailsCallback = function(data, userId) {
     return user;
 }
 
-FoursquareAPI.getVenueDetails = function(callback, venueId) {}
-FoursquareAPI.searchUser = function(callback) {}
-FoursquareAPI.searchVenues = function(callback) {}
-FoursquareAPI.getHistory = function(callback, userId) {}
-FoursquareAPI.getRecentActivity = function(callback) {}
+FoursquareAPI.getVenueDetails = function(callback, venueId) {
+    var params = {};
+    if (venueId == null) {
+        callback(null);
+        return;
+    }
+
+    params.vid = venueId;
+    var callbackfn = function(data) {
+        callback(FoursquareAPI._getVenueDetailsCallback(data, venueId));
+    };
+    sym4sqr._makeNetworkRequest({apifn: "venue.json", type: "GET",
+            params: params, callback: callbackfn, inclLocn: true});
+}
+
+FoursquareAPI._getVenueDetailsCallback = function(data, venueId) {
+    if (data == null || data.venue == null)
+        return null;
+
+    return Venue.getVenue(venueId, data.venue);
+}
+
+FoursquareAPI.searchUser = function(callback) {} // TODO
+FoursquareAPI.searchVenues = function(callback) {} // TODO
+FoursquareAPI.getHistory = function(callback, userId) {} // TODO
+FoursquareAPI.getRecentActivity = function(callback) {} // TODO
