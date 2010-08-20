@@ -57,8 +57,10 @@ Venue.prototype.geolong = "";
 Venue.prototype.mayor = null;
 
 Venue.getVenue = function (id, venueData) {
-    if (Venue._venueList[id] != null)
+    if (Venue._venueList[id] != null) {
+        Venue._venueList[id].setValues(venueData);
         return Venue._venueList[id];
+    }
     if (!venueData)
         return null;
     var newVenue = new Venue({id: id});

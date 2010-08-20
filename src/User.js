@@ -34,6 +34,10 @@ function User(args) {
     else
         this.id = "0";
     User._userList[this.id] = this;
+    this.checkins = [];
+    this.badges = [];
+    this.mayorships = [];
+    this.friends = [];
 }
 
 User.prototype.setValues = function(userData) {
@@ -99,8 +103,10 @@ User.prototype.mayorships = [];
 User.prototype.friends = [];
 
 User.getUser = function (id, userData) {
-    if (User._userList[id] != null)
+    if (User._userList[id] != null) {
+        User._userList[id].setValues(userData);
         return User._userList[id];
+    }
     if (!userData)
         return null;
     var newUser = new User({id: id});
