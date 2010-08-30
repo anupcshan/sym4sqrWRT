@@ -20,6 +20,13 @@
 
 FoursquareAPI = {};
 FoursquareAPI._me = User.getUser(null, {});
+FoursquareAPI._loggedIn = false;
+FoursquareAPI._API_ROOT = 'http://api.foursquare.com/v1/';
+FoursquareAPI._username = "";
+FoursquareAPI._password = "";
+
+FoursquareAPI._serviceObject = null;
+FoursquareAPI._location = {hasLocation: false};
 
 FoursquareAPI.listFriends = function(callback, userId) {
     var params = {};
@@ -28,7 +35,7 @@ FoursquareAPI.listFriends = function(callback, userId) {
     var callbackfn = function(data) {
         callback(FoursquareAPI._listFriendsCallback(data, userId));
     };
-    sym4sqr._makeNetworkRequest({apifn: "friends.json", type: "GET",
+    FoursquareAPI._makeNetworkRequest({apifn: "friends.json", type: "GET",
             params: params, callback: callbackfn, inclLocn: true});
 }
 
@@ -56,7 +63,7 @@ FoursquareAPI.listVenues = function(callback) {
     var callbackfn = function(data) {
         callback(FoursquareAPI._listVenuesCallback(data));
     };
-    sym4sqr._makeNetworkRequest({apifn: "venues.json", type: "GET",
+    FoursquareAPI._makeNetworkRequest({apifn: "venues.json", type: "GET",
             params: params, callback: callbackfn, inclLocn: true});
 }
 
@@ -82,7 +89,7 @@ FoursquareAPI.getUserDetails = function(callback, userId) {
     var callbackfn = function(data) {
         callback(FoursquareAPI._getUserDetailsCallback(data, userId));
     };
-    sym4sqr._makeNetworkRequest({apifn: "user.json", type: "GET",
+    FoursquareAPI._makeNetworkRequest({apifn: "user.json", type: "GET",
             params: params, callback: callbackfn, inclLocn: true});
 }
 
@@ -114,7 +121,7 @@ FoursquareAPI.getVenueDetails = function(callback, venueId) {
     var callbackfn = function(data) {
         callback(FoursquareAPI._getVenueDetailsCallback(data, venueId));
     };
-    sym4sqr._makeNetworkRequest({apifn: "venue.json", type: "GET",
+    FoursquareAPI._makeNetworkRequest({apifn: "venue.json", type: "GET",
             params: params, callback: callbackfn, inclLocn: true});
 }
 
@@ -129,3 +136,85 @@ FoursquareAPI.searchUser = function(callback) {} // TODO
 FoursquareAPI.searchVenues = function(callback) {} // TODO
 FoursquareAPI.getHistory = function(callback, userId) {} // TODO
 FoursquareAPI.getRecentActivity = function(callback) {} // TODO
+
+FoursquareAPI.login = function() {
+    FoursquareAPI._username = $('#username').val();
+    FoursquareAPI._password = $('#password').val();
+    FoursquareAPI._makeNetworkRequest({apifn: "user.json", type: "GET", params: {},
+            callback: FoursquareAPI._loginRequestCallback});
+}
+
+FoursquareAPI._loginRequestCallback = function(data) {
+    if (data['user'] == null) {
+        FoursquareAPI._loggedIn = false;
+        alert('Login error.');
+        return;
+    }
+
+    FoursquareAPI._loggedIn = true;
+    FoursquareAPI._me.setValues(data['user']);
+    alert('Logged in as ' + FoursquareAPI._me.firstname);
+    sym4sqr.showMainWindow();
+}
+
+FoursquareAPI._makeNetworkRequest = function(args) {
+    /*
+     * args : Bag of parameters containing
+     *     - apifn    => API function to be called
+     *    - callback => Function to be called once network request is completed
+     *    - params   => Parameters to be sent in the request
+     *    - type     => GET/POST
+     *    - inclLocn => Boolean value indicating whether location info can be
+     *                   included in the request.
+     */
+    if (args.params == null)
+        args.params = {};
+
+    if (args.type == null)
+        args.type = "GET";
+
+    if (args.inclLocn == true && FoursquareAPI._location.hasLocation == true) {
+        args.params.geolong = FoursquareAPI._location.longitude;
+        args.params.geolat = FoursquareAPI._location.latitude;
+    }
+    $.ajax({url: FoursquareAPI._API_ROOT + args.apifn,  success: args.callback,
+            data: args.params, username: FoursquareAPI._username,
+            password: FoursquareAPI._password, type: args.type});
+}
+
+// Gets the GPS position
+FoursquareAPI.getLocationAsync = function() {
+    try {
+        //Retrieves the Service object to the ILocation interface
+        FoursquareAPI._serviceObject = device.getServiceObject("Service.Location",
+                "ILocation");
+    } catch (e) {
+        alert(e);
+        return;
+    }
+
+    // This specifies update option used while retrieving location estimation.
+    var updateoptions = new Object();
+    // Setting PartialUpdates to 'FALSE' ensures that user get atleast
+    // BasicLocationInformation (Longitude, Lattitude, and Altitude.) is the
+    // default when no LocationInformationClass criteria is given.
+    updateoptions.PartialUpdates = false;
+
+    var criteria = new Object();
+    criteria.Updateoptions = updateoptions;
+
+    try {
+        // Executes the GetLocation method and sets the callbackLocation
+        // as the callback function to be called.
+        FoursquareAPI._serviceObject.ILocation.GetLocation(criteria,
+                FoursquareAPI.gpsCallbackLocation);
+    } catch (e) {
+        alert (e);
+    }
+}
+ 
+FoursquareAPI.gpsCallbackLocation = function(transId, eventCode, result){
+    FoursquareAPI._location.hasLocation = true;
+    FoursquareAPI._location.latitude = result.ReturnValue.Latitude;
+    FoursquareAPI._location.longitude = result.ReturnValue.Longitude;
+}
