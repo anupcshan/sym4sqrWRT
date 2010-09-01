@@ -202,6 +202,7 @@ FoursquareAPI.getLocationAsync = function() {
 
     var criteria = new Object();
     criteria.Updateoptions = updateoptions;
+    criteria.LocationInformationClass = "GenericLocationInfo";
 
     try {
         // Executes the GetLocation method and sets the callbackLocation
@@ -214,6 +215,10 @@ FoursquareAPI.getLocationAsync = function() {
 }
  
 FoursquareAPI.gpsCallbackLocation = function(transId, eventCode, result){
+    if (result.ErrorCode != 0) {
+        FoursquareAPI.getLocationAsync();
+        return;
+    }
     FoursquareAPI._location.hasLocation = true;
     FoursquareAPI._location.latitude = result.ReturnValue.Latitude;
     FoursquareAPI._location.longitude = result.ReturnValue.Longitude;
