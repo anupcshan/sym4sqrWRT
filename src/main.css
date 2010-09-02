@@ -1,3 +1,10 @@
+body {
+    color: white;
+    font-family: Arial;
+    font-weight: bold;
+    font-size: 11pt;
+}
+
 #lightBox {
     position: absolute;
     left: 15%;
@@ -61,4 +68,48 @@
     position: absolute;
     left: 0pt;
     right: 0pt;
+}
+
+#usertopbar {
+    padding: 10px;
+    background-color: lightblue;
+}
+
+#usertopbarrhs {
+    float: right;
+    width: 245px;
+    padding: 0 10px;
+    display: block;
+}
+
+#usernamediv {
+    font-size: 16pt;
+}
+
+#userbadgesmayors {
+    margin-top: 5px;
+}
+
+.blob {
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    background-color: #4444ff;
+    border: none;
+    padding: 5px 10px;
+    float: left;
+    height: 35px;
+}
+
+#userbadges {
+    margin-left: 10px;
+}
+
+.usertopbaricon {
+    height: 20px;
+    width: 20px;
+    float: left;
+}
+
+#usertopbarmayor {
+    background-image: url(img/crown_golden_20x20.png);
 }

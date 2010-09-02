@@ -78,9 +78,9 @@ User.prototype.setValues = function(userData) {
             this.checkins.push(checkinobj);
     }
     if (userData.badges != null)
-        this.badges = [];    // TODO
-    if (userData.mayorships != null)
-        this.mayorships = [];    // TODO
+        this.badges = userData.badges;       // TODO
+    if (userData.mayor != null)
+        this.mayorships = userData.mayor;    // TODO
     if (userData.friends != null) {
         this.friends = [];
         for (var i = 0, len = userData.friends.length; i < len; i ++) {
@@ -101,6 +101,39 @@ User.prototype.checkins = [];
 User.prototype.badges = [];
 User.prototype.mayorships = [];
 User.prototype.friends = [];
+
+User.prototype.showIn = function(elem) {
+    var innerHTML = '';
+    innerHTML += '<div id="usertopbar"><img src="' + this.photo + '" height="75"\
+        width="75"></img>';
+    innerHTML += '<div id="usertopbarrhs">\
+             <div id="usernamediv"></div>\
+             <div id="userbadgesmayors">\
+                <div id="usermayorships" class="blob">\
+                    <div>Mayorships</div>\
+                    <div>\
+                        <div id="usertopbarmayor" class="usertopbaricon"></div>\
+                        <div style="margin-left: 10px; float: left;">'
+                        + this.mayorships.length +
+                        '</div>\
+                    </div>\
+                </div>\
+                <div id="userbadges" class="blob">\
+                    <div>Badges</div>\
+                    <div>\
+                        <div style="background-image: url(img/crown_golden_20x20.png);"\
+                            class="usertopbaricon"></div>\
+                        <div style="margin-left: 10px; float: left;">'
+                        + this.badges.length +
+                        '</div>\
+                    </div>\
+                </div>\
+             </div>\
+        </div>';
+    innerHTML += '</div>';
+    $(elem).html(innerHTML);
+    $('#usernamediv').text(this.firstname);
+}
 
 User.getUser = function (id, userData) {
     if (User._userList[id] != null) {

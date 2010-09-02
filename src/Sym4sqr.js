@@ -28,6 +28,7 @@ sym4sqr.doWork = function() {
 
 sym4sqr.showMainWindow = function() {
     $('#lightBox').hide(400);
+    FoursquareAPI._me.showIn($('#maincontent')[0]);
 }
 
 sym4sqr.showLoginWindow = function() {

@@ -8,3 +8,5 @@
     + searchVenues()
     + getHistory()
     + getRecentActivity()
+
+- Get an icon for badge.

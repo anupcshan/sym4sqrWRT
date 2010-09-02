@@ -89,6 +89,10 @@ FoursquareAPI.getUserDetails = function(callback, userId) {
     var callbackfn = function(data) {
         callback(FoursquareAPI._getUserDetailsCallback(data, userId));
     };
+
+    params.mayor = 1;
+    params.badges = 1;
+
     FoursquareAPI._makeNetworkRequest({apifn: "user.json", type: "GET",
             params: params, callback: callbackfn, inclLocn: true});
 }
@@ -140,8 +144,13 @@ FoursquareAPI.getRecentActivity = function(callback) {} // TODO
 FoursquareAPI.login = function() {
     FoursquareAPI._username = $('#username').val();
     FoursquareAPI._password = $('#password').val();
-    FoursquareAPI._makeNetworkRequest({apifn: "user.json", type: "GET", params: {},
-            callback: FoursquareAPI._loginRequestCallback});
+
+    var params = {};
+    params.mayor = 1;
+    params.badges = 1;
+
+    FoursquareAPI._makeNetworkRequest({apifn: "user.json", type: "GET",
+            params: params, callback: FoursquareAPI._loginRequestCallback});
 }
 
 FoursquareAPI._loginRequestCallback = function(data) {
